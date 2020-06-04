@@ -1,19 +1,24 @@
 import java.io.*;
 import java.util.*;
 
-class Pos implements Comparable<Pos> {
+class Pos {
   int i;
   int j;
-  List<List<Integer>> A;
+  int A[][];
 
-  Pos(int i, int j, List<List<Integer>> A) {
+  Pos(int i, int j, int A[][]) {
     this.i = i;
     this.j = j;
     this.A = A;
   }
 
-  public int compareTo(Pos p) {
-    return i == p.i ? j - p.j : i - p.i;
+  public int hashCode() {
+    return Arrays.deepHashCode(A);
+  }
+
+  public boolean equals(Object o) {
+    Pos p = (Pos) o;
+    return Arrays.deepEquals(A, p.A) ? true : false;
   }
 }
 
@@ -28,37 +33,31 @@ public class Main {
   }
 
   public static void main(String[] args) throws IOException {
-    Pos curr;
-    List<List<Integer>> A = new ArrayList<>();
-    List<List<Integer>> E = new ArrayList<>();
-    for (int i = 0; i < 3; i++) {
-      A.add(new ArrayList<>());
-      E.add(new ArrayList<>());
-    }
+    int A[][] = new int[3][3];
+    int E[][] = new int[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
     int zi = 0, zj = 0;
     for (int i = 0; i < 3; i++) {
       StringTokenizer st = new StringTokenizer(br.readLine());
       for (int j = 0; j < 3; j++) {
-        int a = Integer.parseInt(st.nextToken());
-        A.get(i).add(a);
-        if (a == 0) {
+        A[i][j] = Integer.parseInt(st.nextToken());
+        if (A[i][j] == 0) {
           zi = i;
           zj = j;
         }
-        E.get(i).add(1 + i * 3 + j);
       }
     }
-    curr = new Pos(zi, zj, A);
-    E.get(2).set(2, 0);
 
-    Set<List<List<Integer>>> chk = new HashSet<>();
-    chk.add(curr.A);
+    Pos curr = new Pos(zi, zj, A), end = new Pos(2, 2, E);
+
+    Set<Pos> chk = new HashSet<>();
     Queue<Pos> Q = new LinkedList<>();
+
+    chk.add(curr);
     Q.offer(curr);
 
     int ans = 0;
     out: while (Q.size() > 0) {
-      if (chk.contains(E)) {
+      if (chk.contains(end)) {
         log(ans);
         return;
       }
@@ -72,18 +71,15 @@ public class Main {
         for (int i = 0; i < 4; i++) {
           int ni = zi + di[i], nj = zj + dj[i];
           if (ni >= 0 && ni < 3 && nj >= 0 && nj < 3) {
-            List<List<Integer>> B = new ArrayList<>();
-            for (int k = 0; k < 3; k++) {
-              B.add(new ArrayList<>());
-              for (int j = 0; j < 3; j++)
-                B.get(k).add(A.get(k).get(j));
-            }
+            int B[][] = new int[3][];
+            for (int d = 0; d < 3; d++)
+              B[d] = Arrays.copyOf(A[d], A[d].length);
             swap(B, zi, zj, ni, nj);
-            if (!chk.contains(B)) {
-              chk.add(B);
-              Q.offer(new Pos(ni, nj, B));
+            Pos next = new Pos(ni, nj, B);
+            if (chk.add(next)) {
+              Q.offer(next);
 
-              if (B.equals(E))
+              if (Arrays.deepEquals(B, E))
                 continue out;
             }
           }
@@ -93,9 +89,9 @@ public class Main {
     log(-1);
   }
 
-  static void swap(List<List<Integer>> A, int i1, int j1, int i2, int j2) {
-    int tmp = A.get(i1).get(j1);
-    A.get(i1).set(j1, A.get(i2).get(j2));
-    A.get(i2).set(j2, tmp);
+  static void swap(int A[][], int i1, int j1, int i2, int j2) {
+    int tmp = A[i1][j1];
+    A[i1][j1] = A[i2][j2];
+    A[i2][j2] = tmp;
   }
 }

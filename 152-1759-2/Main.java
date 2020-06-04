@@ -51,13 +51,13 @@ public class Main {
           bw.write(ch);
         bw.write('\n');
       }
-    } else
-      for (int i = curr; i < A.length; i++) {
-        ans[cnt] = A[i];
-        if (A[i] == 'a' || A[i] == 'e' || A[i] == 'i' || A[i] == 'o' || A[i] == 'u')
-          dfs(i + 1, cnt + 1, mCnt + 1);
-        else
-          dfs(i + 1, cnt + 1, mCnt);
-      }
+    } else if (curr < C) {
+      ans[cnt] = A[curr];
+      if (A[curr] == 'a' || A[curr] == 'e' || A[curr] == 'i' || A[curr] == 'o' || A[curr] == 'u')
+        dfs(curr + 1, cnt + 1, mCnt + 1);
+      else
+        dfs(curr + 1, cnt + 1, mCnt);
+      dfs(curr + 1, cnt, mCnt);
+    }
   }
 }

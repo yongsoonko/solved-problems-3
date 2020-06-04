@@ -46,10 +46,10 @@ public class Main {
       for (int i : ans)
         bw.write(i + " ");
       bw.write('\n');
-    } else
-      for (int i = curr; i < K; i++) {
-        ans[cnt] = S[i];
-        dfs(i + 1, cnt + 1);
-      }
+    } else if (curr < K) {
+      ans[cnt] = S[curr];
+      dfs(curr + 1, cnt + 1);
+      dfs(curr + 1, cnt);
+    }
   }
 }

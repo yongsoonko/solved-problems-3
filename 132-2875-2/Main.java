@@ -31,11 +31,12 @@ public class Main {
     int M = Integer.parseInt(st.nextToken());
     int K = Integer.parseInt(st.nextToken());
 
-    int ans = 0;
-    for (int i = 0; i <= K; i++) {
-      int cnt = Math.min(Math.max((N - i) / 2, 0), Math.max(M - (K - i), 0));
-      ans = Math.max(ans, cnt);
+    while (K-- > 0) {
+      if ((N - 1) / 2 > M - 1)
+        N--;
+      else
+        M--;
     }
-    log(ans);
+    log(Math.min(N / 2, M));
   }
 }

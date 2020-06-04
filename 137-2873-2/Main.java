@@ -20,6 +20,7 @@ public class Main {
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   static int di[] = {-1, 0, 1, 0}, dj[] = {0, 1, 0, -1};
+  static char dir[] = {'U', 'R', 'D', 'L'};
 
   static void log(Object o) {
     System.out.print(o);
@@ -44,56 +45,49 @@ public class Main {
       }
     }
 
-    char str[] = new char[] {'U', 'R', 'D', 'L'};
+    StringBuilder sb = new StringBuilder();
     if (R % 2 == 1) {
-      mini = -2;
-      minj = -2;
+      for (int j = 0; j < R / 2; j++)
+        move(sb, 1, C);
+      for (int i = 1; i < C; i++)
+        sb.append('R');
     } else if (C % 2 == 1) {
-      mini = -2;
-      minj = -2;
-      int B[][] = new int[C][R];
-      for (int j = 0; j < C; j++)
-        for (int i = 0; i < R; i++)
-          B[j][i] = A[i][j];
-      str = new char[] {'L', 'D', 'R', 'U'};
-      A = B;
-      int tmp = R;
-      R = C;
-      C = tmp;
-    }
-
-    int i = 0, j = 0, d = i / 2 == mini / 2 ? 2 : 1;
-    while (i < R) {
-      if (i / 2 == mini / 2) {
-        if (j == minj) {
-          int tmp = d;
-          d = 1;
-          i += di[d];
-          j += dj[d];
-          bw.write(str[d]);
-          d = tmp;
-        } else {
-          i += di[d];
-          j += dj[d];
-          bw.write(str[d]);
-          d = d % 2 == 0 ? 1 : i % 2 == 0 ? 2 : 0;
-        }
-        if (i % 2 == 1 && j == C - 1) {
-          if (++i < R)
-            bw.write(str[2]);
-          d = 3;
-        }
-      } else {
-        i += di[d];
-        j += dj[d];
-        bw.write(str[d]);
-        if (j == 0 || j == C - 1) {
-          if (++i < R)
-            bw.write(str[2]);
-          d = i / 2 == mini / 2 ? 2 : j == 0 ? 1 : 3;
+      for (int j = 0; j < C / 2; j++)
+        move(sb, 2, R);
+      for (int i = 1; i < R; i++)
+        sb.append('D');
+    } else {
+      for (int i = 0; i < mini / 2; i++)
+        move(sb, 1, C);
+      sb.append('D');
+      for (int j = 0; j < C / 2; j++) {
+        if (j >= 1)
+          sb.append("RURD");
+        if (j == minj / 2) {
+          if (mini % 2 == 0)
+            sb.append('R');
+          else
+            sb.insert(sb.length() - 1, 'R');
         }
       }
+      sb.append('D');
+      for (int i = mini / 2 + 1; i < R / 2; i++)
+        move(sb, 3, C);
+      sb.deleteCharAt(sb.length() - 1);
     }
-    bw.flush();
+    log(sb);
+  }
+
+  static void move(StringBuilder sb, int d, int cnt) {
+    for (int i = 1; i < cnt; i++)
+      sb.append(dir[d]);
+    int tmp = d;
+    d = d % 2 == 0 ? 1 : 2;
+    sb.append(dir[d]);
+    d = (tmp + 2) % 4;
+    for (int i = 1; i < cnt; i++)
+      sb.append(dir[d]);
+    d = d % 2 == 0 ? 1 : 2;
+    sb.append(dir[d]);
   }
 }

@@ -21,34 +21,37 @@ public class Main {
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   static int di[] = {-1, 0, 1, 0}, dj[] = {0, 1, 0, -1};
   static int A[][] = new int[9][9];
+  static int D[] = new int[10];
 
   static void log(Object o) {
     System.out.print(o);
   }
 
   public static void main(String[] args) throws IOException {
-    for (int i = 0; i < 9; i++) {
+    int mul = 1;
+    for (int i = 0; i < 9; i++, mul <<= 1) {
+      D[i] = mul;
       StringTokenizer st = new StringTokenizer(br.readLine());
       for (int j = 0; j < 9; j++)
         A[i][j] = Integer.parseInt(st.nextToken());
     }
+    D[9] = mul;
 
     dfs(0, 0);
     bw.flush();
   }
 
   static boolean dfs(int ci, int cj) throws IOException {
-    int chk[] = new int[10], i = 0, j = 0;
+    int chk = 0, i = 0, j = 0;
     out: for (i = ci; i < 9; i++)
       for (j = i == ci ? cj : 0; j < 9; j++)
         if (A[i][j] == 0) {
-          for (int d = 0; d < 9; d++)
-            ++chk[A[i][d]];
-          for (int d = 0; d < 9; d++)
-            ++chk[A[d][j]];
           int bi = (i / 3) * 3, bj = (j / 3) * 3;
-          for (int d = 0; d < 9; d++)
-            ++chk[A[bi + d / 3][bj + d % 3]];
+          for (int d = 0; d < 9; d++) {
+            chk |= D[A[i][d]];
+            chk |= D[A[d][j]];
+            chk |= D[A[bi + d / 3][bj + d % 3]];
+          }
           break out;
         }
 
@@ -61,14 +64,15 @@ public class Main {
       return true;
     }
 
-    for (int d = 1; d <= 9; d++)
-      if (chk[d] == 0) {
+    chk >>>= 1;
+    for (int d = 1; d <= 9; d++, chk >>>= 1)
+      if ((chk & 1) == 0) {
         A[i][j] = d;
         if (dfs(i, j))
           return true;
       }
+
     A[i][j] = 0;
     return false;
   }
 }
-

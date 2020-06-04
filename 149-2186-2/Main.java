@@ -46,14 +46,14 @@ public class Main {
     int ans = 0;
     for (int i = 0; i < N; i++)
       for (int j = 0; j < M; j++)
-        if (A[i][j] == str[0])
-          ans += dfs(i, j, 1);
+        if (A[i][j] == str[str.length - 1])
+          ans += dfs(i, j, str.length - 1);
 
     log(ans);
   }
 
   static int dfs(int ci, int cj, int cnt) {
-    if (cnt == str.length)
+    if (cnt == 0)
       return 1;
     if (cache[ci][cj][cnt] >= 0)
       return cache[ci][cj][cnt];
@@ -62,8 +62,8 @@ public class Main {
     for (int i = 0; i < 4; i++)
       for (int j = 1; j <= K; j++) {
         int ni = ci + di[i] * j, nj = cj + dj[i] * j;
-        if (ni >= 0 && ni < N && nj >= 0 && nj < M && A[ni][nj] == str[cnt])
-          sum += dfs(ni, nj, cnt + 1);
+        if (ni >= 0 && ni < N && nj >= 0 && nj < M && A[ni][nj] == str[cnt - 1])
+          sum += dfs(ni, nj, cnt - 1);
       }
     return cache[ci][cj][cnt] = sum;
   }

@@ -27,25 +27,38 @@ public class Main {
 
   public static void main(String[] args) throws IOException {
     StringTokenizer st = new StringTokenizer(br.readLine());
-    int N = Integer.parseInt(st.nextToken());
-    int K = Integer.parseInt(st.nextToken());
+    int F = Integer.parseInt(st.nextToken());
+    int S = Integer.parseInt(st.nextToken());
+    int G = Integer.parseInt(st.nextToken());
+    int U = Integer.parseInt(st.nextToken());
+    int D = Integer.parseInt(st.nextToken());
 
-    int dis[] = new int[100001];
-    dis[N] = 1;
+    int chk[] = new int[F + 1];
+    chk[S] = 1;
+
     Queue<Integer> Q = new LinkedList<>();
-    Q.offer(N);
+    Q.offer(S);
 
+    int ans = 0;
     while (Q.size() > 0) {
-      if (dis[K] > 0)
-        break;
-      int curr = Q.poll();
-      int J[] = {curr - 1, curr + 1, curr * 2};
-      for (int next : J)
-        if (next >= 0 && next <= 100000 && dis[next] == 0) {
-          dis[next] = dis[curr] + 1;
-          Q.offer(next);
+      if (chk[G] == 1) {
+        log(ans);
+        return;
+      }
+      ans++;
+      int sz = Q.size();
+      while (sz-- > 0) {
+        int curr = Q.poll();
+        if (curr + U <= F && chk[curr + U] == 0) {
+          chk[curr + U] = 1;
+          Q.offer(curr + U);
         }
+        if (curr - D >= 1 && chk[curr - D] == 0) {
+          chk[curr - D] = 1;
+          Q.offer(curr - D);
+        }
+      }
     }
-    log(dis[K] - 1);
+    log("use the stairs");
   }
 }
