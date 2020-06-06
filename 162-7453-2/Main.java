@@ -40,24 +40,45 @@ public class Main {
       D[i] = Integer.parseInt(st.nextToken());
     }
 
-    Map<Integer, Integer> mapAB = new HashMap<Integer, Integer>();
+    int sumAB[] = new int[N * N];
+    int sumCD[] = new int[N * N];
+
+    int sz = 0;
     for (int i = 0; i < N; i++)
-      for (int j = 0; j < N; j++) {
-        int sum = A[i] + B[j];
-        Integer cnt;
-        if ((cnt = mapAB.get(sum)) != null)
-          mapAB.put(sum, cnt + 1);
-        else
-          mapAB.put(sum, 1);
-      }
+      for (int j = 0; j < N; j++)
+        sumAB[sz++] = A[i] + B[j];
+
+    sz = 0;
+    for (int i = 0; i < N; i++)
+      for (int j = 0; j < N; j++)
+        sumCD[sz++] = C[i] + D[j];
+
+    Arrays.sort(sumAB);
+    Arrays.sort(sumCD);
 
     long ans = 0;
-    for (int i = 0; i < N; i++)
-      for (int j = 0; j < N; j++) {
-        Integer cnt;
-        if ((cnt = mapAB.get(-(C[i] + D[j]))) != null)
-          ans += cnt;
+    int p = 0, q = sz - 1;
+    while (p < sz && q >= 0) {
+      int sum = sumAB[p] + sumCD[q];
+      if (sum < 0) {
+        int nextP = p;
+        while (nextP < sz && sumAB[nextP] == sumAB[p])
+          nextP++;
+        p = nextP;
+      } else {
+        int nextQ = q;
+        while (nextQ >= 0 && sumCD[nextQ] == sumCD[q])
+          nextQ--;
+        if (sum == 0) {
+          int nextP = p;
+          while (nextP < sz && sumAB[nextP] == sumAB[p])
+            nextP++;
+          ans += (long) (nextP - p) * (q - nextQ);
+          p = nextP;
+        }
+        q = nextQ;
       }
+    }
     log(ans);
   }
 }

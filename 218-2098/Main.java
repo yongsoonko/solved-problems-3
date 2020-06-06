@@ -1,17 +1,22 @@
 import java.io.*;
 import java.util.*;
 
-class Pos implements Comparable<Pos> {
+class Pos {
   int i;
-  int j;
+  boolean j[];
 
-  Pos(int i, int j) {
+  Pos(int i, boolean j[]) {
     this.i = i;
     this.j = j;
   }
 
-  public int compareTo(Pos p) {
-    return i == p.i ? j - p.j : i - p.i;
+  public int hashCode() {
+    return 31 * Arrays.hashCode(j) + i;
+  }
+
+  public boolean equals(Object o) {
+    Pos p = (Pos) o;
+    return i == p.i && Arrays.equals(j, p.j);
   }
 }
 
@@ -20,8 +25,8 @@ public class Main {
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   static int di[] = {-1, 0, 1, 0}, dj[] = {0, 1, 0, -1};
-  static int N, E, W[][];
-  static Map<List<Boolean>, Integer> cache;
+  static int N, W[][];
+  static Map<Pos, Integer> cache;
   // 지금 경로의 이미 방문 노드로 국한하지 않고,
   // 지금 노드의 이미 방문 경로로 가지치기
   // cache가 chk를 대신한다고 보면된다.
@@ -41,18 +46,15 @@ public class Main {
         W[i][j] = Integer.parseInt(st.nextToken());
     }
 
-
-    ArrayList<Boolean> start = new ArrayList<>();
-    for (int i = 0; i < N; i++)
-      start.add(false);
-    start.set(0, true);
-
-    log(dfs(start, 0));
+    boolean start[] = new boolean[N];
+    start[0] = true;
+    log(dfs(new Pos(0, start)));
   }
 
-  static int dfs(List<Boolean> state, int curr) {
-    int i;
-    for (i = 0; i < N && state.get(i); i++);
+  static int dfs(Pos state) {
+    int i, curr = state.i;
+    boolean chk[] = state.j;
+    for (i = 0; i < N && chk[i]; i++);
     if (i == N)
       return W[curr][0] > 0 ? W[curr][0] : (int) 1e9;
 
@@ -61,11 +63,12 @@ public class Main {
       return res;
 
     res = (int) 1e9;
+    boolean nChk[] = Arrays.copyOf(chk, N);
     for (int next = 0; next < N; next++)
-      if (!state.get(next) && W[curr][next] > 0) {
-        state.set(next, true);
-        res = Math.min(res, W[curr][next] + dfs(state, next));
-        state.set(next, false);
+      if (!nChk[next] && W[curr][next] > 0) {
+        nChk[next] = true;
+        res = Math.min(res, W[curr][next] + dfs(new Pos(next, nChk)));
+        nChk[next] = false;
       }
 
     cache.put(state, res);

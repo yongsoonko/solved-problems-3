@@ -20,7 +20,6 @@ public class Main {
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   static int di[] = {-1, 0, 1, 0}, dj[] = {0, 1, 0, -1};
-  static int N, M, A[], ans;
 
   static void log(Object o) {
     System.out.print(o);
@@ -28,25 +27,30 @@ public class Main {
 
   public static void main(String[] args) throws IOException {
     StringTokenizer st = new StringTokenizer(br.readLine());
-    N = Integer.parseInt(st.nextToken());
-    M = Integer.parseInt(st.nextToken());
-    A = new int[N];
+    int N = Integer.parseInt(st.nextToken());
+    int S = Integer.parseInt(st.nextToken());
+    int sum[] = new int[N + 1];
 
     st = new StringTokenizer(br.readLine());
-    for (int i = 0; i < N; i++)
-      A[i] = Integer.parseInt(st.nextToken());
-
-    int p = 0, q = 0, sum = 0;
-    while (true) {
-      if (sum < M) {
-        if (q == N)
-          break;
-        sum += A[q++];
-      } else
-        sum -= A[p++];
-      if (sum == M)
-        ans++;
+    for (int i = 0; i < N; i++) {
+      int a = Integer.parseInt(st.nextToken());
+      sum[i + 1] = sum[i] + a;
     }
-    log(ans);
+
+    int ans = (int) 1e9;
+    for (int i = 0; i < N; i++) {
+      int lt = i + 1, rt = N;
+      while (lt <= rt) {
+        int mid = (lt + rt) / 2;
+        if (sum[mid] - sum[i] < S)
+          lt = mid + 1;
+        else {
+          if (ans > mid - i)
+            ans = mid - i;
+          rt = mid - 1;
+        }
+      }
+    }
+    log(ans == (int) 1e9 ? 0 : ans);
   }
 }

@@ -20,7 +20,7 @@ public class Main {
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   static int di[] = {-1, 0, 1, 0}, dj[] = {0, 1, 0, -1};
-  static int N, M, A[], ans;
+  static int N, S, A[], ans;
 
   static void log(Object o) {
     System.out.print(o);
@@ -29,24 +29,22 @@ public class Main {
   public static void main(String[] args) throws IOException {
     StringTokenizer st = new StringTokenizer(br.readLine());
     N = Integer.parseInt(st.nextToken());
-    M = Integer.parseInt(st.nextToken());
+    S = Integer.parseInt(st.nextToken());
     A = new int[N];
 
     st = new StringTokenizer(br.readLine());
     for (int i = 0; i < N; i++)
       A[i] = Integer.parseInt(st.nextToken());
 
-    int p = 0, q = 0, sum = 0;
-    while (true) {
-      if (sum < M) {
-        if (q == N)
-          break;
-        sum += A[q++];
-      } else
-        sum -= A[p++];
-      if (sum == M)
-        ans++;
-    }
+    ans = S == 0 ? -1 : 0;
+    dfs(0, 0);
     log(ans);
+  }
+
+  static void dfs(int curr, int sum) {
+    if (sum == S)
+      ans++;
+    for (int i = curr; i < N; i++)
+      dfs(i + 1, sum + A[i]);
   }
 }

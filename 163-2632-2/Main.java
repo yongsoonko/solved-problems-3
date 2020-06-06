@@ -39,11 +39,11 @@ public class Main {
     int cntB[] = new int[1000001];
     cntA[0] = cntB[0] = 1;
 
-    
-
     int sum = 0;
     for (int i = 0; i < m; i++) {
       A[i] = Integer.parseInt(br.readLine());
+      sumA[i] = A[i];
+      cntA[A[i]]++;
       sum += A[i];
     }
     cntA[sum]++;
@@ -51,17 +51,19 @@ public class Main {
     sum = 0;
     for (int i = 0; i < n; i++) {
       B[i] = Integer.parseInt(br.readLine());
+      sumB[i] = B[i];
+      cntB[B[i]]++;
       sum += B[i];
     }
     cntB[sum]++;
 
-    for (int i = 0; i < m - 1; i++)
+    for (int i = 1; i < m - 1; i++)
       for (int j = 0; j < m; j++) {
         sumA[j] = sumA[j] + A[(j + i) % m];
         cntA[sumA[j]]++;
       }
 
-    for (int i = 0; i < n - 1; i++)
+    for (int i = 1; i < n - 1; i++)
       for (int j = 0; j < n; j++) {
         sumB[j] = sumB[j] + B[(j + i) % n];
         cntB[sumB[j]]++;

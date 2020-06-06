@@ -15,16 +15,38 @@ class Pos implements Comparable<Pos> {
   }
 }
 
+
 public class Main {
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
   static int di[] = {-1, 0, 1, 0}, dj[] = {0, 1, 0, -1};
+  static int N, S, A[], ans;
 
   static void log(Object o) {
     System.out.print(o);
   }
-  
+
   public static void main(String[] args) throws IOException {
-    
+    StringTokenizer st = new StringTokenizer(br.readLine());
+    N = Integer.parseInt(st.nextToken());
+    S = Integer.parseInt(st.nextToken());
+    A = new int[N];
+
+    st = new StringTokenizer(br.readLine());
+    for (int i = 0; i < N; i++)
+      A[i] = Integer.parseInt(st.nextToken());
+
+    ans = S == 0 ? -1 : 0;
+    dfs(0, 0);
+    log(ans);
+  }
+
+  static void dfs(int curr, int sum) {
+    if (curr == N && sum == S)
+      ans++;
+    else if (curr < N) {
+      dfs(curr + 1, sum + A[curr]);
+      dfs(curr + 1, sum);
+    }
   }
 }
