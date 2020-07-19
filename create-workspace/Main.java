@@ -11,12 +11,9 @@ public class Main {
       if (f.exists() == false)
         f.mkdir();
       File java = new File(f, "Main.java");
-      File input = new File(f, "input.txt");
       try {
         if (java.exists() == false)
           java.createNewFile();
-        if (input.exists() == false)
-          input.createNewFile();
       } catch (IOException e) {
         e.printStackTrace();
       }
